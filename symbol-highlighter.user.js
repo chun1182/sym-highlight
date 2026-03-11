@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Symbol Highlighter
 // @namespace    https://github.com/sym-highlight
-// @version      1.5.0
+// @version      1.7.0
 // @description  競技プログラミングのコード中の記号文字をハイライトして視認性を向上させる
 // @match        https://atcoder.jp/*
 // @match        https://codeforces.com/*
@@ -14,32 +14,35 @@
 
   // === 色設定（カテゴリごと） ===
   const STYLE = {
-    bracket: 'color:#e06c75 !important;font-weight:bold', // 括弧: 赤系
-    operator: 'color:#61afef !important;font-weight:bold', // 演算子: 青系
-    delimiter: 'color:#98c379 !important;font-weight:bold', // 区切り: 緑系
+    bracket: 'color:#e45649 !important;font-weight:bold', // 括弧: 赤
+    operator: 'color:#4078f2 !important;font-weight:bold', // 演算子: 青
+    delimiter: 'color:#50a14f !important;font-weight:bold', // 区切り: 緑
   };
 
-  // 正規表現（半角＋全角記号をリテラルで直接定義）
-  const RE = /[(){}[\]<>+\-*/%=!&|^~;:,.（）｛｝［］＜＞＋－＊／％＝！＆｜＾～；：，．「」『』【】]/g;
+  // 正規表現（半角＋全角＋記号文字をリテラルで直接定義）
+  const RE = /[(){}[\]<>+\-*/%=!&|^~;:,.（）｛｝［］＜＞＋－＊／％＝！＆｜＾～；：，．「」『』【】。、・→←↑↓↔⇒⇔×÷≤≥≠≦≧∞∈∉⊂⊃∪∩∧∨¬#@_？?＃＠＿]/g;
 
   // 文字→カテゴリ名のマップ
   const CAT = {};
   for (const ch of '(){}[]<>（）｛｝［］＜＞「」『』【】') CAT[ch] = 'bracket';
-  for (const ch of '+-*/%=!&|^~＋－＊／％＝！＆｜＾～') CAT[ch] = 'operator';
-  for (const ch of ';:,.；：，．') CAT[ch] = 'delimiter';
+  for (const ch of '+-*/%=!&|^~＋－＊／％＝！＆｜＾～×÷≤≥≠≦≧∈∉⊂⊃∪∩∧∨¬') CAT[ch] = 'operator';
+  for (const ch of ';:,.；：，．。、・') CAT[ch] = 'delimiter';
+  for (const ch of '→←↑↓↔⇒⇔∞#@_？?＃＠＿') CAT[ch] = 'operator';
 
   // === KaTeX内の記号にCSSで色を当てる ===
   function injectKatexStyles() {
     const style = document.createElement('style');
     style.textContent = [
       // 括弧: mopen, mclose
-      `.katex .mopen { color: #e06c75 !important; font-weight: bold; }`,
-      `.katex .mclose { color: #e06c75 !important; font-weight: bold; }`,
+      `.katex .mopen { color: #e45649 !important; font-weight: bold; }`,
+      `.katex .mclose { color: #e45649 !important; font-weight: bold; }`,
       // 演算子: mrel (=, <, > 等), mbin (+, -, * 等)
-      `.katex .mrel { color: #61afef !important; font-weight: bold; }`,
-      `.katex .mbin { color: #61afef !important; font-weight: bold; }`,
+      `.katex .mrel { color: #4078f2 !important; font-weight: bold; }`,
+      `.katex .mbin { color: #4078f2 !important; font-weight: bold; }`,
       // 区切り: mpunct (, ; 等)
-      `.katex .mpunct { color: #98c379 !important; font-weight: bold; }`,
+      `.katex .mpunct { color: #50a14f !important; font-weight: bold; }`,
+      // 変数: mathnormal (m, k, A, w 等のイタリック変数)
+      `.katex .mord.mathnormal { color: #c18401 !important; font-weight: bold; }`,
     ].join('\n');
     document.head.appendChild(style);
   }

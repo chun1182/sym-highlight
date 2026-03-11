@@ -25,7 +25,8 @@ docs/                         設計ドキュメント
 
 - 対象サイト: AtCoder, Codeforces
 - 通常テキスト: `#task-statement` `.problem-statement` `pre` `code` 内のテキストノードをTreeWalkerで走査し、記号を `<span>` で囲む
-- KaTeX数式内: CSSルール（`.katex .mopen` 等）で色を当てる（DOM構造を壊さないため）
+- KaTeX数式内: CSSルール（`.katex .mopen`, `.mord.mathnormal` 等）で色を当てる（DOM構造を壊さないため）
 - TreeWalkerフィルタでKaTeX/MathJax/script/style/math要素内のテキストノードをスキップ
 - MutationObserver（disconnect/observe方式）で動的コンテンツにも対応
-- 全角記号（（）「」等）にも対応
+- 半角・全角記号、矢印、集合・論理記号にも対応
+- 配色はOne Lightテーマベース（白背景最適化）
